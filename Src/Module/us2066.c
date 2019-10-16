@@ -77,7 +77,28 @@ void NHD_US2066Init(void)
     command(DISPLAY_CTRL | DISPLAY_ONOFF_CONTROL);  /* @brief display ON */
 
     HAL_Delay(100);
-    
+    NHD_US2066Output();
+    return ;
+}
+
+uint8_t text[ROW_N][COLUMN_N+1] = {"1-Newhaven Display--",
+                            	   "2-------Test--------",
+                            	   "3-16/20-Characters--",
+                            	   "4!@#$%^&*()_+{}[]<>?"};
+void NHD_US2066Output(void)
+{
+    NHD_US2066DisplayClear();
+    HAL_Delay(2);
+
+    for(uint32_t row = 0; row < ROW_N; row++)
+    {
+        NHD_US2066LineFeed((NHD_LineFeedTypeDef)row);
+        for(uint32_t column = 0; column < COLUMN_N; column++)
+        {
+            data((uint8_t)text[row][column]);
+        }
+    }
+
     return ;
 }
 
@@ -96,6 +117,32 @@ void NHD_US2066DisplayOff(void)
 void NHD_US2066DisplayClear(void)
 {
     command(CLEAR_DISPLAY);
+    return ;
+}
+
+void NHD_US2066LineFeed(NHD_LineFeedTypeDef num)
+{
+    switch(num)
+    {
+        case LINE_1:
+            command(SET_DDRAM_ADDRESS);
+            break;
+
+        case LINE_2:
+            command(SET_DDRAM_ADDRESS | DDRAM_2LINE_FEED);
+            break;
+
+        case LINE_3:
+            command(SET_DDRAM_ADDRESS | DDRAM_3LINE_FEED);            
+            break;
+
+        case LINE_4:
+            command(SET_DDRAM_ADDRESS | DDRAM_4LINE_FEED);            
+            break;
+            
+        default : break;
+    }
+    
     return ;
 }
 

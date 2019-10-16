@@ -6,16 +6,21 @@ extern "C" {
 
 /* @brief NHD-0420CW-AW3 Spec */
 #define ROW_N                       4
+#define COLUMN_N                    20
 
 /* @brief I2C Interface Info */
 #define I2C_TX_TIME_OUT             100
 #define SLAVE2W                     0x3CU   /* @brief 0,1,1,1,1,0,SA0,R/W# */
-#define DATA_BYTE_COMMAND           0x00    /* @brief Control Byte : Co(Continuation bit) = 0, D/C#(Data/Command Selection bit = 0 */
-#define DATA_BYTE_DATA              0x40    /* @brief Control Byte : Co(Continuation bit) = 0, D/C#(Data/Command Selection bit = 1 */
+#define DATA_BYTE_COMMAND           0x00U   /* @brief Control Byte : Co(Continuation bit) = 0, D/C#(Data/Command Selection bit = 0 */
+#define DATA_BYTE_DATA              0x40U   /* @brief Control Byte : Co(Continuation bit) = 0, D/C#(Data/Command Selection bit = 1 */
 
 /* @brief Fundamental Command Set */
 #define CLEAR_DISPLAY               0x01U   /* @brief Clear Display: Write "20H" to DDRAM and set DDRAM address to "00H" from AC */
 #define SET_DDRAM_ADDRESS           0x80U   /* @brief Set DDRAM address in address counter */
+
+#define DDRAM_2LINE_FEED            0x20U   /* @brief 1line 0x00~0x0F, 2line 0x20~0x2F */
+#define DDRAM_3LINE_FEED            0x40U   /* @brief 2line 0x20~0x2F, 3line 0x40~0x4F */
+#define DDRAM_4LINE_FEED            0x60U   /* @brief 3line 0x40~0x4F, 3line 0x60~0x6F */
 
 /* @brief Extended Command Set */
 #define FUNCTION_SELECTION_A        0x71U   /* @brief Function Selection A */
@@ -85,6 +90,13 @@ extern "C" {
 #define ALTERNATIVE                 0x10U   /* @brief Alternative (odd/even) SEG pin configuration */
 #define SEG_LEFT_RIGHT_REMAP        0x20U   /* @brief Enable SEG Left/Right remap */
 
+typedef enum _NHD_LineFeedTypeDef {
+    LINE_1,
+    LINE_2,
+    LINE_3,
+    LINE_4,    
+}NHD_LineFeedTypeDef;
+
 #pragma pack(1)
 /**
 @struct _ST_FUCTION_SET
@@ -111,6 +123,8 @@ void NHD_US2066Init(void);
 void NHD_US2066DisplayOn(void);
 void NHD_US2066DisplayOff(void);
 void NHD_US2066DisplayClear(void);
+void NHD_US2066Output(void);
+void NHD_US2066LineFeed(NHD_LineFeedTypeDef);
 
 #ifdef __cplusplus
 }
